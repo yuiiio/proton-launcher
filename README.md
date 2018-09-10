@@ -24,7 +24,7 @@ The usage of the software is pretty easy.
 3. Download ProtonLauncher
 4. Start the Windows executable with this command:
 
-    ```
+```
 [Path to Proton launcher]/proton-launcher [Path to executable]
-    ```
+```
     
