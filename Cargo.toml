@@ -1,0 +1,6 @@
+[package]
+name = "proton-launcher"
+version = "0.1.0"
+authors = ["axusis <axusis@cryptolab.net>"]
+
+[dependencies]
