@@ -21,8 +21,9 @@ The usage of the software is pretty easy.
 
 1. Download the Windows executable
 2. Download Steam and install a Proton version
-3. Download ProtonLauncher
-4. Start the Windows executable with this command:
+3. (Optional) Install winetricks
+4. Download ProtonLauncher
+5. Start the Windows executable with this command:
 
 ```
 [Path to Proton launcher]/proton-launcher [Path to executable]
