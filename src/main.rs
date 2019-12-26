@@ -50,8 +50,8 @@ fn main() {
     }
 
     // Start the application
-    command::execute(&latest_proton_version, &[
-        "run".to_string(),
-        application_path.clone(),
-    ]);
+    command::execute(
+        &latest_proton_version,
+        &["run".to_string(), application_path.clone()],
+    );
 }

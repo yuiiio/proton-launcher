@@ -1,13 +1,21 @@
-use std::fs;
-use std::process;
 use super::environment;
+use std::fs;
+use std::io;
+use std::process;
 
 // Get the latest version of the installed Proton versions
 pub fn get_latest_version() -> String {
-    let files: fs::ReadDir = match fs::read_dir(environment::get_variable("HOME") + "/.local/share/Steam/steamapps/common") {
-        Ok(val) => {
-            val
-        },
+    match get_custom_version() {
+        Ok(proton) => return proton,
+        Err(_err) => return get_official_version(),
+    };
+}
+
+pub fn get_official_version() -> String {
+    let files: fs::ReadDir = match fs::read_dir(
+        environment::get_variable("HOME") + "/.steam/root/steam/steamapps/common",
+    ) {
+        Ok(val) => val,
         Err(err) => {
             println!("{}", err);
             println!("Couldn't read the directory");
@@ -23,7 +31,7 @@ pub fn get_latest_version() -> String {
                 if String::from(file_ref.file_name().to_string_lossy()).contains("Proton") {
                     proton_directories.push(String::from(file_ref.path().to_string_lossy()));
                 }
-            },
+            }
             Err(err) => {
                 println!("{}", err);
             }
@@ -35,14 +43,39 @@ pub fn get_latest_version() -> String {
         process::exit(1);
     }
 
-    return proton_directories[proton_directories.len()-1].clone() + "/proton";
+    return proton_directories[proton_directories.len() - 1].clone() + "/proton";
+}
+
+pub fn get_custom_version() -> Result<String, io::Error> {
+    let files: fs::ReadDir =
+        fs::read_dir(environment::get_variable("HOME") + "/.steam/root/compatibilitytools.d")?;
+
+    let mut proton_directories: Vec<String> = Vec::new();
+
+    for file in files {
+        match file.as_ref() {
+            Ok(file_ref) => {
+                if String::from(file_ref.file_name().to_string_lossy()).contains("proton") {
+                    proton_directories.push(String::from(file_ref.path().to_string_lossy()));
+                }
+            }
+            Err(err) => {
+                println!("{}", err);
+            }
+        }
+    }
+
+    if proton_directories.len() == 0 {
+        return Err(io::Error::new(io::ErrorKind::Other, "not have custom"));
+    }
+
+    return Ok(proton_directories[proton_directories.len() - 1].clone() + "/proton");
 }
 
 // Create a directory for the WINE/Proton prefix (internally called "compat data"-directory)
 pub fn create_compat_data_dir(application_name: String) -> String {
     let directory_path = environment::get_variable("HOME") + "/WinApps/" + &*application_name;
-    fs::create_dir_all(&directory_path)
-        .expect("The directory for the prefix couldn't be created!");
+    fs::create_dir_all(&directory_path).expect("The directory for the prefix couldn't be created!");
 
     return directory_path;
 }
@@ -51,7 +84,9 @@ pub fn create_compat_data_dir(application_name: String) -> String {
 pub fn get_application_name(application_path: String) -> String {
     let splitted_application_path: Vec<&str> = application_path.split("/").collect();
 
-    let application_name = splitted_application_path[splitted_application_path.len()-1].clone().replace(".exe", "");
+    let application_name = splitted_application_path[splitted_application_path.len() - 1]
+        .clone()
+        .replace(".exe", "");
 
     return String::from(application_name);
 }
@@ -75,7 +110,8 @@ pub fn get_prefix_path(application_path: &String) -> String {
     }
 
     // Prepare the prefix path
-    let prefix_path = environment::get_variable("HOME") + "/WinApps/" + splitted_application_path[counter];
+    let prefix_path =
+        environment::get_variable("HOME") + "/WinApps/" + splitted_application_path[counter];
 
     println!("The application is located in a prefix: {}", &prefix_path);
 
