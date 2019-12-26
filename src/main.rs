@@ -9,6 +9,17 @@ use std::process;
 fn main() {
     println!("ProtonLauncher v{}", env!("CARGO_PKG_VERSION"));
 
+    // Check wine process and if running then exit
+    let pgrep = process::Command::new("pgrep")
+        .args(&["wine"])
+        .output()
+        .expect("Not found pgrep");
+
+    if pgrep.stdout != [] {
+        println!("Already wine running");
+        process::exit(0);
+    }
+
     let first_argument = environment::get_argument(1);
     if first_argument == "winetricks-install" {
         let package = environment::get_argument(2);
