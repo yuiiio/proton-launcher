@@ -32,6 +32,9 @@ fn main() {
 
     let application_path = environment::resolve_path(first_argument);
 
+    // pass all args
+    let args = environment::get_after_arguments();
+
     // Prepare the environment
     let mut env_vars: HashMap<&'static str, &'static str> = HashMap::new();
     env_vars.insert("PROTON_NO_ESYNC", "1");
@@ -63,6 +66,6 @@ fn main() {
     // Start the application
     command::execute(
         &latest_proton_version,
-        &["run".to_string(), application_path.clone()],
+        &["run".to_string(), application_path.clone(), args.clone()],
     );
 }
