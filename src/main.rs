@@ -67,5 +67,6 @@ fn main() {
     command::execute(
         &latest_proton_version,
         &["run".to_string(), application_path.clone(), args.clone()],
+        &environment::get_variable("STEAM_COMPAT_DATA_PATH"),
     );
 }

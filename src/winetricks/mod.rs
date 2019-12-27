@@ -14,7 +14,5 @@ pub fn do_the_trick(package: String) {
     // Install the package
     environment::set_variable("WINEPREFIX".to_string(), prefix_path.clone());
 
-    command::execute(&"winetricks".to_string(), &[
-        package,
-    ]);
+    command::execute(&"winetricks".to_string(), &[package], &prefix_path);
 }
