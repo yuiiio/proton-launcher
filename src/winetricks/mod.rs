@@ -9,7 +9,7 @@ pub fn do_the_trick(package: String) {
     let current_path = env::current_dir().unwrap();
     let assumed_prefix = proton::get_prefix_path(&current_path.to_str().unwrap().to_string());
 
-    let prefix_path = assumed_prefix + "/pfx/drive_c";
+    let prefix_path = assumed_prefix + "/pfx";
 
     // Install the package
     environment::set_variable("WINEPREFIX".to_string(), prefix_path.clone());
