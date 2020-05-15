@@ -19,7 +19,17 @@ pub fn get_official_version() -> String {
         Err(err) => {
             println!("{}", err);
             println!("Couldn't read the directory");
-            process::exit(1);
+            println!("Check Arch's proton install path");
+            match fs::read_dir(
+                environment::get_variable("HOME") + "/.steam/root/steamapps/common",
+                ) {
+                Ok(val) => val,
+                Err(err) => {
+                    println!("{}", err);
+                    println!("Couldn't read the directory");
+                    process::exit(1);
+                }
+            }
         }
     };
 
