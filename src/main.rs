@@ -63,10 +63,26 @@ fn main() {
         environment::set_variable("STEAM_COMPAT_DATA_PATH".to_string(), compat_directory);
     }
 
-    // Start the application
-    command::execute(
-        &latest_proton_version,
-        &["run".to_string(), application_path.clone(), args.clone()],
-        &environment::get_variable("STEAM_COMPAT_DATA_PATH"),
-    );
+    if application_path.ends_with(".msi") {
+        println!("Install msi file");
+        let prefix_path = environment::get_variable("STEAM_COMPAT_DATA_PATH") + "/pfx";
+        // .msi install (require system install wine)
+        environment::set_variable("WINEPREFIX".to_string(), prefix_path.clone());
+        command::execute(
+            &String::from("msiexec"),
+            &[
+                "/i".to_string(),
+                application_path.clone(),
+                args.clone(),
+            ],
+            &environment::get_variable("STEAM_COMPAT_DATA_PATH"),
+        );
+    } else {
+        // Start the application
+        command::execute(
+            &latest_proton_version,
+            &["run".to_string(), application_path.clone(), args.clone()],
+            &environment::get_variable("STEAM_COMPAT_DATA_PATH"),
+        );
+    }
 }

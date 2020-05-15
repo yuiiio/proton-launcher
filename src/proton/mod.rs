@@ -96,7 +96,8 @@ pub fn get_application_name(application_path: String) -> String {
 
     let application_name = splitted_application_path[splitted_application_path.len() - 1]
         .clone()
-        .replace(".exe", "");
+        .replace(".exe", "")
+        .replace(".msi", "");
 
     return String::from(application_name);
 }
